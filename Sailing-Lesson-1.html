@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sailing Lesson 1: Lines, Sails &amp; Rigging — Seawind 1600</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --navy: #0B2545;
+    --deep-blue: #13315C;
+    --mid-blue: #134074;
+    --teal: #1A7A8A;
+    --light-blue: #8DA9C4;
+    --cream: #EEF4ED;
+    --white: #FFFFFF;
+    --accent: #E8963E;
+    --light-gray: #D6E0F0;
+    --body-text: #1E3A5F;
+    --danger: #8B1A1A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0a0a0a;
+    color: var(--body-text);
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .slideshow {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
+    flex-direction: column;
+    padding: 3rem 4rem;
+    overflow-y: auto;
+  }
+
+  .slide.active { display: flex; }
+
+  .slide.bg-navy { background: linear-gradient(135deg, var(--navy), var(--deep-blue)); color: var(--white); }
+  .slide.bg-cream { background: var(--cream); }
+  .slide.bg-dark { background: var(--navy); color: var(--white); }
+
+  .slide-number {
+    position: fixed;
+    bottom: 1rem; right: 2rem;
+    font-size: 0.85rem;
+    color: var(--light-blue);
+    opacity: 0.7;
+    z-index: 10;
+  }
+
+  .footer-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 2.5rem;
+    background: rgba(9, 27, 54, 0.95);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    z-index: 10;
+  }
+
+  .footer-bar span {
+    font-size: 0.75rem;
+    color: var(--light-blue);
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 4px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+    z-index: 100;
+  }
+
+  /* Title slide */
+  .title-slide {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .title-slide h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .title-slide .subtitle {
+    font-size: 1.6rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .title-slide .divider {
+    width: 120px;
+    height: 3px;
+    background: var(--light-blue);
+    margin: 1rem auto;
+  }
+
+  .title-slide .tagline {
+    font-size: 1.1rem;
+    color: var(--light-blue);
+  }
+
+  /* Section title */
+  .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.2rem;
+    color: var(--navy);
+    margin-bottom: 0.3rem;
+  }
+
+  .bg-navy .section-title,
+  .bg-dark .section-title { color: var(--white); }
+
+  .section-subtitle {
+    font-size: 1rem;
+    color: var(--teal);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+
+  .bg-navy .section-subtitle { color: var(--accent); }
+
+  /* Cards */
+  .card-row {
+    display: flex;
+    gap: 1.5rem;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    flex: 1;
+  }
+
+  .card.dark {
+    background: var(--mid-blue);
+    color: var(--cream);
+  }
+
+  .card.accent-card {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  .card.danger-card {
+    background: var(--danger);
+    color: var(--white);
+  }
+
+  .card h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+    color: var(--navy);
+  }
+
+  .card.dark h3 { color: var(--white); }
+  .card.accent-card h3,
+  .card.danger-card h3 { color: var(--white); }
+
+  .card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .card ul li {
+    padding: 0.3rem 0 0.3rem 1.2rem;
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .card ul li::before {
+    content: '\25B8';
+    position: absolute;
+    left: 0;
+    color: var(--teal);
+  }
+
+  .card.dark ul li::before { color: var(--accent); }
+
+  .card p { font-size: 0.95rem; line-height: 1.6; }
+
+  .label { font-weight: 600; color: var(--navy); display: block; margin-top: 0.6rem; }
+  .card.dark .label { color: var(--accent); }
+
+  .highlight { color: var(--accent); font-weight: 600; }
+  .teal { color: var(--teal); }
+
+  .memory-trick {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(26, 122, 138, 0.08);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+    color: var(--teal);
+    font-size: 0.95rem;
+  }
+
+  /* Big callout slide (Rule #1) */
+  .callout-box {
+    background: var(--deep-blue);
+    border-radius: 12px;
+    padding: 2.5rem 3rem;
+    text-align: center;
+    max-width: 700px;
+    margin: 2rem auto;
+  }
+
+  .callout-box h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .callout-box p { font-size: 1.1rem; color: var(--light-blue); margin-top: 0.5rem; }
+  .callout-box .accent-text { color: var(--accent); font-style: italic; margin-top: 1rem; }
+
+  /* Three-column cards */
+  .three-cards {
+    display: flex;
+    gap: 1.5rem;
+    flex: 1;
+  }
+
+  .three-cards .card { flex: 1; }
+
+  /* Reference table */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .ref-table th {
+    background: var(--navy);
+    color: var(--white);
+    padding: 0.6rem 1rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .ref-table td {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  .ref-table tr:nth-child(even) { background: var(--light-gray); }
+
+  .ref-table td:first-child { font-weight: 600; color: var(--navy); }
+
+  /* Full-width card */
+  .card.full { flex: none; }
+
+  /* SVG Diagram */
+  .diagram-container {
+    flex: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .diagram-container svg {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+
+  .content-with-diagram {
+    display: flex;
+    gap: 2rem;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .content-side { flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+
+  /* Nav arrows */
+  .nav-arrows {
+    position: fixed;
+    bottom: 3rem;
+    right: 2rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 20;
+  }
+
+  .nav-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--light-blue);
+    background: rgba(11, 37, 69, 0.8);
+    color: var(--light-blue);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    backdrop-filter: blur(4px);
+  }
+
+  .nav-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--white);
+  }
+
+  /* SVG label styling */
+  .svg-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; }
+  .svg-label-sm { font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 500; }
+  .svg-title { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .slide { padding: 2rem; }
+    .card-row, .content-with-diagram { flex-direction: column; }
+    .title-slide h1 { font-size: 2.5rem; }
+    .three-cards { flex-direction: column; }
+  }
+
+  /* Keyboard hint */
+  .key-hint {
+    position: fixed;
+    bottom: 3.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--light-blue);
+    opacity: 0.5;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slideshow" id="slideshow">
+
+<!-- ========== SLIDE 1: Title ========== -->
+<div class="slide bg-navy title-slide active" data-n="1">
+  <svg width="80" height="80" viewBox="0 0 80 80" fill="none" style="margin-bottom:1rem">
+    <path d="M40 10 L40 65" stroke="#8DA9C4" stroke-width="2.5"/>
+    <path d="M40 12 L65 35 L40 35 Z" fill="#E8963E" opacity="0.9"/>
+    <path d="M38 15 L20 38 L38 38 Z" fill="#8DA9C4" opacity="0.7"/>
+    <ellipse cx="25" cy="68" rx="22" ry="5" fill="none" stroke="#8DA9C4" stroke-width="1.5" opacity="0.4"/>
+    <ellipse cx="55" cy="68" rx="22" ry="5" fill="none" stroke="#8DA9C4" stroke-width="1.5" opacity="0.4"/>
+  </svg>
+  <h1>Sailing Lesson 1</h1>
+  <div class="subtitle">Lines, Sails &amp; Rigging</div>
+  <div class="divider"></div>
+  <div class="tagline">Seawind 1600 Catamaran</div>
+</div>
+
+<!-- ========== SLIDE 2: Overview with Diagram ========== -->
+<div class="slide bg-cream" data-n="2">
+  <div class="section-title">What We'll Learn Today</div>
+  <div class="section-subtitle">Your guide to every line and sail on our Seawind 1600</div>
+  <div class="content-with-diagram">
+    <div class="content-side">
+      <div class="card">
+        <h3>Sails We'll Cover</h3>
+        <ul>
+          <li>Mainsail &amp; its control lines</li>
+          <li>Jib (headsail)</li>
+          <li>Screecher (light wind sail)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Lines We'll Learn</h3>
+        <ul>
+          <li>Halyards, sheets &amp; furling lines</li>
+          <li>Outhaul, leech line, reef lines</li>
+          <li>Preventer (safety line)</li>
+          <li>Hoisting procedure</li>
+        </ul>
+      </div>
+    </div>
+    <div class="diagram-container">
+      <!-- Overview diagram: Seawind 1600 side view with all parts labeled -->
+      <svg viewBox="0 0 460 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Water -->
+        <path d="M0 350 Q50 340 100 350 Q150 360 200 350 Q250 340 300 350 Q350 360 400 350 Q430 345 460 350 L460 420 L0 420 Z" fill="#134074" opacity="0.15"/>
+
+        <!-- Port hull -->
+        <path d="M60 340 L80 290 L260 280 L280 290 L260 340 Z" fill="#0B2545" opacity="0.12" stroke="#0B2545" stroke-width="1.5"/>
+        <!-- Starboard hull -->
+        <path d="M180 355 L200 305 L380 295 L400 305 L380 355 Z" fill="#0B2545" opacity="0.12" stroke="#0B2545" stroke-width="1.5"/>
+        <!-- Crossbeam / bridge deck -->
+        <rect x="140" y="290" width="140" height="15" rx="3" fill="#0B2545" opacity="0.2" stroke="#0B2545" stroke-width="1"/>
+
+        <!-- Mast -->
+        <line x1="210" y1="50" x2="210" y2="295" stroke="#0B2545" stroke-width="3"/>
+
+        <!-- Forestay -->
+        <line x1="210" y1="50" x2="340" y2="290" stroke="#8DA9C4" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+        <!-- Backstay (implied) -->
+        <line x1="210" y1="50" x2="100" y2="295" stroke="#8DA9C4" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+
+        <!-- Mainsail -->
+        <path d="M212 55 L212 260 L130 265 Z" fill="#E8963E" opacity="0.2" stroke="#E8963E" stroke-width="1.5"/>
+
+        <!-- Boom -->
+        <line x1="210" y1="262" x2="130" y2="267" stroke="#0B2545" stroke-width="2.5"/>
+
+        <!-- Jib -->
+        <path d="M212 55 L335 285 L215 280 Z" fill="#1A7A8A" opacity="0.15" stroke="#1A7A8A" stroke-width="1.5"/>
+
+        <!-- Screecher (shown furled as dotted) -->
+        <line x1="350" y1="120" x2="370" y2="290" stroke="#E8963E" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
+        <text x="378" y="200" class="svg-label-sm" fill="#E8963E" opacity="0.8">Screecher (furled)</text>
+
+        <!-- LABELS with leader lines -->
+        <!-- Main Halyard -->
+        <line x1="210" y1="55" x2="170" y2="30" stroke="#0B2545" stroke-width="0.8"/>
+        <circle cx="210" cy="55" r="3" fill="#E8963E"/>
+        <text x="100" y="28" class="svg-label" fill="#0B2545">Main Halyard</text>
+
+        <!-- Mainsail label -->
+        <text x="155" y="170" class="svg-title" fill="#E8963E" transform="rotate(-78, 155, 170)">MAINSAIL</text>
+
+        <!-- Jib label -->
+        <text x="268" y="180" class="svg-label" fill="#1A7A8A" transform="rotate(-60, 268, 180)">JIB</text>
+
+        <!-- Main Sheet -->
+        <path d="M170 267 L170 310 L210 310" stroke="#1A7A8A" stroke-width="1.5" fill="none"/>
+        <circle cx="170" cy="267" r="3" fill="#1A7A8A"/>
+        <text x="140" y="326" class="svg-label" fill="#1A7A8A">Main Sheet</text>
+
+        <!-- Outhaul -->
+        <circle cx="130" cy="267" r="3" fill="#E8963E"/>
+        <line x1="130" y1="267" x2="70" y2="240" stroke="#0B2545" stroke-width="0.8"/>
+        <text x="20" y="237" class="svg-label" fill="#0B2545">Outhaul</text>
+
+        <!-- Boom label -->
+        <text x="143" y="256" class="svg-label-sm" fill="#0B2545">BOOM</text>
+
+        <!-- Leech -->
+        <line x1="172" y1="155" x2="135" y2="140" stroke="#0B2545" stroke-width="0.8"/>
+        <circle cx="172" cy="155" r="2.5" fill="#0B2545"/>
+        <text x="65" y="138" class="svg-label" fill="#0B2545">Leech (trailing edge)</text>
+
+        <!-- Luff -->
+        <line x1="214" y1="130" x2="240" y2="110" stroke="#0B2545" stroke-width="0.8"/>
+        <text x="243" y="108" class="svg-label-sm" fill="#0B2545">Luff</text>
+
+        <!-- Foot -->
+        <text x="155" y="278" class="svg-label-sm" fill="#0B2545">Foot</text>
+
+        <!-- Forestay label -->
+        <text x="290" y="140" class="svg-label-sm" fill="#8DA9C4" transform="rotate(-60, 290, 140)">Forestay</text>
+
+        <!-- Jib Sheets -->
+        <path d="M290 286 L290 325" stroke="#1A7A8A" stroke-width="1.2"/>
+        <circle cx="290" cy="286" r="2.5" fill="#1A7A8A"/>
+        <text x="260" y="340" class="svg-label" fill="#1A7A8A">Jib Sheets</text>
+
+        <!-- Jib Furling -->
+        <circle cx="338" cy="288" r="4" fill="none" stroke="#1A7A8A" stroke-width="1.5"/>
+        <line x1="338" y1="292" x2="338" y2="310" stroke="#0B2545" stroke-width="0.8"/>
+        <text x="310" y="323" class="svg-label-sm" fill="#0B2545">Furling Drum</text>
+
+        <!-- Preventer -->
+        <path d="M145 267 Q200 310 320 295" stroke="#8B1A1A" stroke-width="1.5" stroke-dasharray="5 3" fill="none"/>
+        <text x="195" y="316" class="svg-label" fill="#8B1A1A">Preventer</text>
+
+        <!-- Mast label -->
+        <text x="218" y="170" class="svg-label-sm" fill="#0B2545" transform="rotate(-90, 218, 170)">MAST</text>
+
+        <!-- Reefing points -->
+        <circle cx="195" cy="195" r="2" fill="#E8963E" opacity="0.7"/>
+        <circle cx="180" cy="210" r="2" fill="#E8963E" opacity="0.7"/>
+        <circle cx="165" cy="225" r="2" fill="#E8963E" opacity="0.7"/>
+        <line x1="195" y1="195" x2="230" y2="195" stroke="#0B2545" stroke-width="0.6"/>
+        <text x="233" y="198" class="svg-label-sm" fill="#0B2545">Reef Points</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 3: Key Rule ========== -->
+<div class="slide bg-navy" data-n="3" style="justify-content:center;align-items:center;">
+  <div style="font-size:1.5rem;color:var(--accent);font-family:'Playfair Display',serif;margin-bottom:1.5rem;">The #1 Rule</div>
+  <div class="callout-box">
+    <h2>On a boat, ropes are called LINES.</h2>
+    <p>Each line has a specific name based on its job.</p>
+    <p class="accent-text">If you know the name, you know the job!</p>
+  </div>
+</div>
+
+<!-- ========== SLIDE 4: The Mainsail ========== -->
+<div class="slide bg-cream" data-n="4">
+  <div class="section-title">The Mainsail</div>
+  <div class="section-subtitle">The primary and most important sail</div>
+  <div class="content-with-diagram">
+    <div class="content-side">
+      <div class="card">
+        <span class="label">What is it?</span>
+        <p>The large triangular sail attached to the mast and boom. It's your primary power source.</p>
+        <span class="label">Why it matters</span>
+        <p>The mainsail is raised first and taken down last. On the Seawind 1600, it has a full-batten design for a clean shape.</p>
+        <span class="label">Parts of the mainsail</span>
+        <ul>
+          <li><strong>Head</strong> — top corner (halyard attaches here)</li>
+          <li><strong>Tack</strong> — front bottom corner (at the mast/boom)</li>
+          <li><strong>Clew</strong> — back bottom corner (outhaul attaches here)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="diagram-container">
+      <!-- Mainsail detail diagram -->
+      <svg viewBox="0 0 340 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Mast -->
+        <line x1="100" y1="30" x2="100" y2="350" stroke="#0B2545" stroke-width="3"/>
+        <text x="108" y="190" class="svg-label-sm" fill="#0B2545" transform="rotate(-90,108,190)">MAST</text>
+
+        <!-- Boom -->
+        <line x1="100" y1="310" x2="280" y2="320" stroke="#0B2545" stroke-width="3"/>
+        <text x="170" y="340" class="svg-label-sm" fill="#0B2545">BOOM</text>
+
+        <!-- Mainsail triangle -->
+        <path d="M102 35 L102 308 L278 318 Z" fill="#E8963E" opacity="0.15" stroke="#E8963E" stroke-width="2"/>
+
+        <!-- Head -->
+        <circle cx="102" cy="35" r="5" fill="#E8963E"/>
+        <line x1="102" y1="35" x2="145" y2="25" stroke="#0B2545" stroke-width="0.8"/>
+        <text x="150" y="22" class="svg-label" fill="#E8963E">HEAD</text>
+        <text x="150" y="36" class="svg-label-sm" fill="#0B2545">(halyard attaches here)</text>
+
+        <!-- Tack -->
+        <circle cx="102" cy="308" r="5" fill="#1A7A8A"/>
+        <line x1="102" y1="308" x2="50" y2="290" stroke="#0B2545" stroke-width="0.8"/>
+        <text x="15" y="286" class="svg-label" fill="#1A7A8A">TACK</text>
+
+        <!-- Clew -->
+        <circle cx="278" cy="318" r="5" fill="#1A7A8A"/>
+        <line x1="278" y1="318" x2="295" y2="290" stroke="#0B2545" stroke-width="0.8"/>
+        <text x="253" y="284" class="svg-label" fill="#1A7A8A">CLEW</text>
+        <text x="245" y="297" class="svg-label-sm" fill="#0B2545">(outhaul here)</text>
+
+        <!-- Luff label -->
+        <text x="68" y="170" class="svg-label" fill="#0B2545" transform="rotate(-90,68,170)">LUFF (leading edge)</text>
+
+        <!-- Leech label -->
+        <text x="210" y="155" class="svg-label" fill="#0B2545" transform="rotate(-73,210,155)">LEECH (trailing edge)</text>
+
+        <!-- Foot label -->
+        <text x="160" y="330" class="svg-label" fill="#0B2545">FOOT (bottom edge)</text>
+
+        <!-- Battens -->
+        <line x1="104" y1="100" x2="175" y2="103" stroke="#0B2545" stroke-width="1" opacity="0.4"/>
+        <line x1="104" y1="160" x2="200" y2="167" stroke="#0B2545" stroke-width="1" opacity="0.4"/>
+        <line x1="104" y1="220" x2="225" y2="232" stroke="#0B2545" stroke-width="1" opacity="0.4"/>
+        <text x="210" y="243" class="svg-label-sm" fill="#0B2545" opacity="0.6">Battens</text>
+
+        <!-- Halyard going up -->
+        <path d="M102 35 L95 20 L95 10" stroke="#E8963E" stroke-width="1.5" fill="none"/>
+        <text x="60" y="10" class="svg-label-sm" fill="#E8963E">Halyard ↑</text>
+
+        <!-- Reef points -->
+        <circle cx="104" cy="260" r="3" fill="#8B1A1A"/>
+        <line x1="104" y1="260" x2="250" y2="275" stroke="#8B1A1A" stroke-width="1" stroke-dasharray="4 2" opacity="0.5"/>
+        <circle cx="250" cy="275" r="3" fill="#8B1A1A"/>
+        <text x="255" y="265" class="svg-label-sm" fill="#8B1A1A">Reef Line</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 5: Main Halyard ========== -->
+<div class="slide bg-cream" data-n="5">
+  <div class="section-title">Main Halyard</div>
+  <div class="section-subtitle">The line that raises the mainsail</div>
+  <div class="card-row">
+    <div class="card">
+      <h3>What It Does</h3>
+      <ul>
+        <li>Hoists (pulls up) the mainsail to the top of the mast</li>
+        <li>Runs from the head of the sail, up through a sheave at the masthead, then back down to the cockpit</li>
+        <li>Once raised, it's cleated (secured) tight</li>
+      </ul>
+    </div>
+    <div class="card dark">
+      <h3>Word Origin</h3>
+      <p><span class="highlight">"Halyard" comes from "haul yard"</span></p>
+      <p style="margin-top:0.5rem;">In the old days, sailors hauled the yard (the horizontal spar) up the mast.</p>
+      <div class="memory-trick" style="border-color:var(--accent);color:var(--accent);background:rgba(232,150,62,0.1);">
+        HAL-yard = "HAUL it up the YARD (mast)"
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 6: Main Sheet ========== -->
+<div class="slide bg-cream" data-n="6">
+  <div class="section-title">Main Sheet</div>
+  <div class="section-subtitle">Controls the boom angle — NOT a sheet of sail!</div>
+  <div class="content-with-diagram">
+    <div class="content-side" style="flex:1.3;">
+      <div class="card">
+        <span class="label">What it does</span>
+        <p>Controls the angle of the boom (and mainsail) relative to the boat.</p>
+        <span class="label">How it works</span>
+        <ul>
+          <li><strong>Pull in (sheet in)</strong> = boom closer to centreline = more power upwind</li>
+          <li><strong>Let out (ease)</strong> = boom swings out = less power, better for downwind</li>
+        </ul>
+        <span class="label">Seawind 1600</span>
+        <p>Uses a traveller system to fine-tune the boom angle across the boat.</p>
+      </div>
+    </div>
+    <div style="flex:0.7;display:flex;flex-direction:column;gap:1rem;">
+      <div class="card accent-card" style="text-align:center;">
+        <h3 style="font-size:1.1rem;">Common Mistake!</h3>
+        <p style="font-size:0.9rem;">"Sheet" does NOT mean a sheet of sail. It's the <strong>LINE</strong> that controls the sail angle.</p>
+      </div>
+      <div class="diagram-container" style="flex:1;">
+        <svg viewBox="0 0 220 200" fill="none">
+          <!-- Simple top-down view showing sheet in/out -->
+          <text x="110" y="15" class="svg-title" fill="#0B2545" text-anchor="middle">Top-Down View</text>
+          <!-- Boat outline -->
+          <path d="M110 30 L140 70 L135 170 L110 190 L85 170 L80 70 Z" fill="#0B2545" opacity="0.08" stroke="#0B2545" stroke-width="1.5"/>
+          <!-- Mast -->
+          <circle cx="110" cy="80" r="4" fill="#0B2545"/>
+          <!-- Boom - sheeted in -->
+          <line x1="110" y1="80" x2="110" y2="150" stroke="#0B2545" stroke-width="2.5"/>
+          <text x="125" y="120" class="svg-label-sm" fill="#0B2545">Sheeted in</text>
+          <!-- Boom - eased (ghost) -->
+          <line x1="110" y1="80" x2="155" y2="140" stroke="#E8963E" stroke-width="2" stroke-dasharray="4 2" opacity="0.6"/>
+          <text x="158" y="135" class="svg-label-sm" fill="#E8963E">Eased out</text>
+          <!-- Sheet line -->
+          <path d="M110 150 L110 170" stroke="#1A7A8A" stroke-width="1.5"/>
+          <text x="120" y="175" class="svg-label-sm" fill="#1A7A8A">Sheet</text>
+          <!-- Wind arrow -->
+          <line x1="25" y1="50" x2="25" y2="130" stroke="#8DA9C4" stroke-width="1.5"/>
+          <polygon points="22,130 28,130 25,140" fill="#8DA9C4"/>
+          <text x="8" y="90" class="svg-label-sm" fill="#8DA9C4" transform="rotate(-90,8,90)">WIND</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 7: Outhaul ========== -->
+<div class="slide bg-cream" data-n="7">
+  <div class="section-title">Outhaul</div>
+  <div class="section-subtitle">Controls mainsail shape and fullness</div>
+  <div class="content-with-diagram">
+    <div class="content-side">
+      <div class="card">
+        <span class="label">What it does</span>
+        <p>Pulls the foot (bottom edge) of the mainsail along the boom towards the end.</p>
+        <span class="label">How to use it</span>
+        <ul>
+          <li><strong>Tight outhaul</strong> = flatter sail = better in strong wind (less power, less heeling)</li>
+          <li><strong>Loose outhaul</strong> = fuller (baggier) sail = more power in light wind</li>
+        </ul>
+        <div class="memory-trick">"OUT-haul" = hauls the sail OUT along the boom</div>
+      </div>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 300 200" fill="none">
+        <text x="150" y="18" class="svg-title" fill="#0B2545" text-anchor="middle">Outhaul Effect on Sail Shape</text>
+        <!-- Tight outhaul - left -->
+        <text x="75" y="42" class="svg-label" fill="#1A7A8A" text-anchor="middle">TIGHT (Strong Wind)</text>
+        <line x1="20" y1="55" x2="20" y2="170" stroke="#0B2545" stroke-width="2"/>
+        <line x1="20" y1="170" x2="140" y2="175" stroke="#0B2545" stroke-width="2"/>
+        <path d="M22 58 L22 168 L138 173 Z" fill="#E8963E" opacity="0.15" stroke="#E8963E" stroke-width="1.5"/>
+        <text x="55" y="145" class="svg-label-sm" fill="#0B2545">Flat shape</text>
+
+        <!-- Loose outhaul - right -->
+        <text x="225" y="42" class="svg-label" fill="#E8963E" text-anchor="middle">LOOSE (Light Wind)</text>
+        <line x1="170" y1="55" x2="170" y2="170" stroke="#0B2545" stroke-width="2"/>
+        <line x1="170" y1="170" x2="280" y2="175" stroke="#0B2545" stroke-width="2"/>
+        <path d="M172 58 Q200 165 172 168 L278 173 Z" fill="#E8963E" opacity="0.25" stroke="#E8963E" stroke-width="1.5"/>
+        <!-- Fuller belly -->
+        <path d="M172 58 Q215 150 172 168" fill="none" stroke="#E8963E" stroke-width="1.5"/>
+        <path d="M172 58 L172 168 L278 173 Z" fill="none" stroke="#E8963E" stroke-width="1.5"/>
+        <text x="210" y="145" class="svg-label-sm" fill="#0B2545">Full shape</text>
+        <!-- Arrow showing outhaul direction -->
+        <line x1="255" y1="185" x2="290" y2="187" stroke="#1A7A8A" stroke-width="1.5"/>
+        <polygon points="290,184 298,187 290,190" fill="#1A7A8A"/>
+        <text x="252" y="198" class="svg-label-sm" fill="#1A7A8A">Outhaul pulls →</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 8: Leech Line ========== -->
+<div class="slide bg-cream" data-n="8">
+  <div class="section-title">Leech Line</div>
+  <div class="section-subtitle">The small line that stops sail flutter</div>
+  <div class="card-row">
+    <div class="card" style="flex:1.5;">
+      <span class="label">What it does</span>
+      <p>A thin line running through the trailing edge (leech) of the sail. Tightening it reduces flapping/flutter along the back of the sail.</p>
+      <span class="label">When to adjust</span>
+      <ul>
+        <li>If you hear a rhythmic flapping along the sail's back edge, tighten the leech line slightly</li>
+        <li>Don't over-tighten — it cups the sail and hurts performance</li>
+      </ul>
+    </div>
+    <div class="card dark" style="text-align:center;">
+      <h3>Sail Edge Vocabulary</h3>
+      <svg viewBox="0 0 180 220" fill="none" style="max-width:180px;margin:0.5rem auto;">
+        <path d="M30 10 L30 190 L160 195 Z" fill="#E8963E" opacity="0.12" stroke="#E8963E" stroke-width="1.5"/>
+        <!-- Luff -->
+        <text x="12" y="100" class="svg-label" fill="#8DA9C4" transform="rotate(-90,12,100)">LUFF (front)</text>
+        <!-- Leech -->
+        <text x="115" y="90" class="svg-label" fill="#E8963E" transform="rotate(-73,115,90)">LEECH (back)</text>
+        <!-- Foot -->
+        <text x="75" y="212" class="svg-label" fill="#8DA9C4">FOOT (bottom)</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 9: Reefing Lines ========== -->
+<div class="slide bg-cream" data-n="9">
+  <div class="section-title">Reefing Lines</div>
+  <div class="section-subtitle">Reduce sail area when the wind picks up</div>
+  <div class="content-with-diagram">
+    <div class="content-side">
+      <div class="card">
+        <span class="label">What is reefing?</span>
+        <p>Reducing the area of the mainsail to handle stronger winds safely.</p>
+        <span class="label">How it works</span>
+        <ul>
+          <li>The line pulls a lower section of the sail down to the boom</li>
+          <li>This shortens the sail, reducing power and making the boat more manageable</li>
+        </ul>
+        <span class="label">Seawind 1600</span>
+        <p>Typically has single-line reefing — one line does the job from the cockpit.</p>
+        <div class="memory-trick">"Reef early, shake it out later." If you're thinking about reefing, you should already be doing it!</div>
+      </div>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 300 340" fill="none">
+        <text x="150" y="18" class="svg-title" fill="#0B2545" text-anchor="middle">Reefing the Mainsail</text>
+        <!-- Full sail -->
+        <text x="75" y="42" class="svg-label" fill="#0B2545" text-anchor="middle">Full Sail</text>
+        <line x1="30" y1="55" x2="30" y2="300" stroke="#0B2545" stroke-width="2"/>
+        <line x1="30" y1="300" x2="130" y2="305" stroke="#0B2545" stroke-width="2"/>
+        <path d="M32 58 L32 298 L128 303 Z" fill="#E8963E" opacity="0.15" stroke="#E8963E" stroke-width="1.5"/>
+
+        <!-- Reefed sail -->
+        <text x="225" y="42" class="svg-label" fill="#8B1A1A" text-anchor="middle">Reefed</text>
+        <line x1="180" y1="55" x2="180" y2="300" stroke="#0B2545" stroke-width="2"/>
+        <line x1="180" y1="300" x2="280" y2="305" stroke="#0B2545" stroke-width="2"/>
+        <!-- Reduced sail area -->
+        <path d="M182 58 L182 220 L255 225 Z" fill="#1A7A8A" opacity="0.15" stroke="#1A7A8A" stroke-width="1.5"/>
+        <!-- Furled lower portion -->
+        <path d="M182 220 L182 298 L278 303 Z" fill="#0B2545" opacity="0.06" stroke="#0B2545" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="215" y="270" class="svg-label-sm" fill="#8B1A1A">Tucked away</text>
+        <!-- Reef line -->
+        <line x1="182" y1="220" x2="255" y2="225" stroke="#8B1A1A" stroke-width="2" stroke-dasharray="4 2"/>
+        <circle cx="182" cy="220" r="3" fill="#8B1A1A"/>
+        <circle cx="255" cy="225" r="3" fill="#8B1A1A"/>
+        <text x="200" y="215" class="svg-label-sm" fill="#8B1A1A">Reef line</text>
+        <!-- Less area label -->
+        <text x="210" y="150" class="svg-label-sm" fill="#1A7A8A">Less sail</text>
+        <text x="210" y="162" class="svg-label-sm" fill="#1A7A8A">= less power</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 10: The Preventer ========== -->
+<div class="slide bg-dark" data-n="10">
+  <div class="section-title" style="color:var(--white);">The Preventer</div>
+  <div class="section-subtitle" style="color:var(--accent);">CRITICAL SAFETY LINE</div>
+  <div class="content-with-diagram">
+    <div class="content-side">
+      <div class="card dark">
+        <span class="label" style="color:var(--accent);">What it does</span>
+        <ul>
+          <li>A line rigged from the boom forward to a cleat on the foredeck</li>
+          <li>Prevents the boom from swinging violently across the boat during an accidental gybe</li>
+        </ul>
+        <span class="label" style="color:var(--accent);">When to use it</span>
+        <ul>
+          <li><strong style="color:var(--white);">Always rig a preventer when sailing downwind</strong></li>
+          <li>An uncontrolled gybe can cause serious injury or damage</li>
+        </ul>
+      </div>
+      <div class="card danger-card" style="text-align:center;">
+        <h3>DANGER</h3>
+        <p style="font-size:0.9rem;">An accidental gybe swings the boom across at high speed. It can knock a person overboard or cause head injuries.</p>
+      </div>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 280 300" fill="none">
+        <text x="140" y="18" class="svg-title" fill="#FFFFFF" text-anchor="middle">Preventer Rigging</text>
+        <!-- Top-down boat -->
+        <path d="M140 30 L175 80 L170 250 L140 280 L110 250 L105 80 Z" fill="#FFFFFF" opacity="0.06" stroke="#8DA9C4" stroke-width="1.5"/>
+        <!-- Mast -->
+        <circle cx="140" cy="100" r="5" fill="#8DA9C4"/>
+        <text x="150" y="96" class="svg-label-sm" fill="#8DA9C4">Mast</text>
+        <!-- Boom - out to starboard -->
+        <line x1="140" y1="100" x2="195" y2="200" stroke="#8DA9C4" stroke-width="3"/>
+        <text x="200" y="155" class="svg-label-sm" fill="#8DA9C4">Boom</text>
+        <!-- Preventer line -->
+        <path d="M195 200 Q170 180 165 120 Q163 80 155 50" stroke="#E8963E" stroke-width="2.5" fill="none"/>
+        <circle cx="195" cy="200" r="4" fill="#E8963E"/>
+        <circle cx="155" cy="50" r="4" fill="#E8963E"/>
+        <text x="105" y="45" class="svg-label" fill="#E8963E">Foredeck cleat</text>
+        <text x="198" y="218" class="svg-label" fill="#E8963E">End of boom</text>
+        <!-- Label the preventer -->
+        <text x="112" y="138" class="svg-label" fill="#E8963E" transform="rotate(-70,112,138)">PREVENTER</text>
+        <!-- Dangerous swing arc (what it prevents) -->
+        <path d="M195 200 Q140 250 85 200" stroke="#8B1A1A" stroke-width="1.5" stroke-dasharray="5 3" fill="none"/>
+        <polygon points="88,197 82,204 92,203" fill="#8B1A1A"/>
+        <text x="105" y="243" class="svg-label-sm" fill="#8B1A1A">Dangerous swing</text>
+        <text x="110" y="255" class="svg-label-sm" fill="#8B1A1A">(prevented!)</text>
+        <!-- Wind direction -->
+        <line x1="250" y1="50" x2="250" y2="130" stroke="#8DA9C4" stroke-width="1.5" opacity="0.6"/>
+        <polygon points="247,130 253,130 250,140" fill="#8DA9C4" opacity="0.6"/>
+        <text x="233" y="45" class="svg-label-sm" fill="#8DA9C4">Wind</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 11: The Jib ========== -->
+<div class="slide bg-cream" data-n="11">
+  <div class="section-title">The Jib</div>
+  <div class="section-subtitle">The headsail that works with the main</div>
+  <div class="content-with-diagram">
+    <div class="content-side">
+      <div class="card">
+        <span class="label">What is it?</span>
+        <p>The smaller sail set in front of the mast, attached to the forestay.</p>
+        <span class="label">Why it matters</span>
+        <ul>
+          <li>Works with the mainsail to create efficient airflow (the "slot effect")</li>
+          <li>Helps the boat point higher into the wind</li>
+          <li>On the Seawind 1600, it's roller-furling — wraps around the forestay</li>
+        </ul>
+        <span class="label">Key difference from mainsail</span>
+        <p>No boom! The jib is controlled entirely by its sheets.</p>
+      </div>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 300 350" fill="none">
+        <text x="150" y="18" class="svg-title" fill="#0B2545" text-anchor="middle">Jib &amp; Mainsail — The "Slot"</text>
+        <!-- Mast -->
+        <line x1="140" y1="40" x2="140" y2="310" stroke="#0B2545" stroke-width="3"/>
+        <!-- Forestay -->
+        <line x1="140" y1="40" x2="270" y2="305" stroke="#8DA9C4" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="225" y="155" class="svg-label-sm" fill="#8DA9C4" transform="rotate(-65,225,155)">Forestay</text>
+        <!-- Mainsail -->
+        <path d="M142 45 L142 280 L80 285 Z" fill="#E8963E" opacity="0.12" stroke="#E8963E" stroke-width="1.5"/>
+        <text x="100" y="180" class="svg-label" fill="#E8963E" transform="rotate(-80,100,180)">MAIN</text>
+        <!-- Boom -->
+        <line x1="140" y1="282" x2="80" y2="287" stroke="#0B2545" stroke-width="2.5"/>
+        <!-- Jib -->
+        <path d="M142 45 L265 300 L145 295 Z" fill="#1A7A8A" opacity="0.12" stroke="#1A7A8A" stroke-width="1.5"/>
+        <text x="195" y="200" class="svg-label" fill="#1A7A8A" transform="rotate(-62,195,200)">JIB</text>
+        <!-- Slot effect arrows -->
+        <path d="M145 140 Q160 145 170 140" stroke="#0B2545" stroke-width="1" fill="none"/>
+        <polygon points="170,137 176,140 170,143" fill="#0B2545"/>
+        <path d="M145 180 Q160 185 170 180" stroke="#0B2545" stroke-width="1" fill="none"/>
+        <polygon points="170,177 176,180 170,183" fill="#0B2545"/>
+        <path d="M145 220 Q160 225 170 220" stroke="#0B2545" stroke-width="1" fill="none"/>
+        <polygon points="170,217 176,220 170,223" fill="#0B2545"/>
+        <text x="178" y="183" class="svg-label-sm" fill="#0B2545">"Slot" airflow</text>
+        <!-- Furling drum -->
+        <circle cx="268" cy="305" r="7" fill="none" stroke="#1A7A8A" stroke-width="2"/>
+        <text x="250" y="330" class="svg-label-sm" fill="#1A7A8A">Furling Drum</text>
+        <!-- No boom label -->
+        <text x="195" y="310" class="svg-label-sm" fill="#0B2545" opacity="0.6">No boom on jib!</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 12: Jib Sheets ========== -->
+<div class="slide bg-cream" data-n="12">
+  <div class="section-title">Jib Sheets</div>
+  <div class="section-subtitle">Two lines, one job — control the jib angle</div>
+  <div class="content-with-diagram">
+    <div class="content-side">
+      <div class="card">
+        <h3>How They Work</h3>
+        <ul>
+          <li>Two sheets — one on each side (port &amp; starboard)</li>
+          <li><strong>Only ONE is active at a time</strong></li>
+          <li>The working sheet is on the leeward (downwind) side</li>
+          <li>When you tack, you release one and pull in the other</li>
+        </ul>
+      </div>
+      <div class="card dark">
+        <h3>Tacking Procedure</h3>
+        <ul>
+          <li>1. Release the loaded (windward) sheet</li>
+          <li>2. Helm turns the boat through the wind</li>
+          <li>3. Pull in the new leeward sheet</li>
+          <li>4. Trim to correct angle</li>
+        </ul>
+      </div>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 280 300" fill="none">
+        <text x="140" y="18" class="svg-title" fill="#0B2545" text-anchor="middle">Jib Sheets — Top View</text>
+        <!-- Boat top-down -->
+        <path d="M140 35 L175 85 L170 245 L140 275 L110 245 L105 85 Z" fill="#0B2545" opacity="0.06" stroke="#0B2545" stroke-width="1.5"/>
+        <!-- Mast -->
+        <circle cx="140" cy="100" r="4" fill="#0B2545"/>
+        <!-- Forestay/jib -->
+        <line x1="140" y1="100" x2="140" y2="45" stroke="#8DA9C4" stroke-width="1"/>
+        <!-- Jib shape (on port tack - wind from port) -->
+        <path d="M140 45 Q175 70 155 98" stroke="#1A7A8A" stroke-width="2" fill="#1A7A8A" fill-opacity="0.1"/>
+        <!-- Port sheet (slack) -->
+        <path d="M155 98 Q130 120 115 160" stroke="#8DA9C4" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <text x="68" y="155" class="svg-label-sm" fill="#8DA9C4">Port sheet</text>
+        <text x="72" y="167" class="svg-label-sm" fill="#8DA9C4">(slack)</text>
+        <!-- Starboard sheet (loaded) -->
+        <path d="M155 98 Q170 130 165 160" stroke="#E8963E" stroke-width="2.5"/>
+        <text x="170" y="155" class="svg-label" fill="#E8963E">Starboard sheet</text>
+        <text x="178" y="168" class="svg-label-sm" fill="#E8963E">(working)</text>
+        <!-- Winches -->
+        <rect x="108" y="155" width="8" height="8" rx="2" fill="#0B2545" opacity="0.3"/>
+        <rect x="162" y="155" width="8" height="8" rx="2" fill="#E8963E" opacity="0.5"/>
+        <!-- Wind direction -->
+        <line x1="55" y1="60" x2="95" y2="100" stroke="#8DA9C4" stroke-width="1.5"/>
+        <polygon points="95,95 100,103 90,100" fill="#8DA9C4"/>
+        <text x="35" y="55" class="svg-label-sm" fill="#8DA9C4">Wind</text>
+        <!-- Labels -->
+        <text x="95" y="30" class="svg-label-sm" fill="#0B2545">PORT</text>
+        <text x="165" y="30" class="svg-label-sm" fill="#0B2545">STBD</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 13: Jib Furling Line ========== -->
+<div class="slide bg-cream" data-n="13">
+  <div class="section-title">Jib Furling Line</div>
+  <div class="section-subtitle">Roll it up, roll it out</div>
+  <div class="card-row">
+    <div class="card" style="flex:1;">
+      <span class="label">What it does</span>
+      <p>Wraps the jib around the forestay using a roller-furling drum at the base.</p>
+      <span class="label">To furl (roll up)</span>
+      <p>Ease the jib sheet slightly, then pull the furling line — the sail wraps neatly around the stay.</p>
+      <span class="label">To unfurl (deploy)</span>
+      <p>Pull the jib sheet while easing the furling line — the sail unrolls.</p>
+      <span class="label">Partial furling</span>
+      <p>You can partially furl the jib to reduce its area in stronger winds (like reefing the main).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 14: The Screecher ========== -->
+<div class="slide bg-cream" data-n="14">
+  <div class="section-title">The Screecher</div>
+  <div class="section-subtitle">Your light-wind secret weapon</div>
+  <div class="content-with-diagram">
+    <div class="content-side">
+      <div class="card">
+        <span class="label">What is it?</span>
+        <p>A large, lightweight headsail — bigger than the jib, made from lighter cloth. Set on its own dedicated furler, separate from the jib.</p>
+        <span class="label">When to use it</span>
+        <ul>
+          <li>Light to moderate winds, especially reaching (wind from the side)</li>
+          <li>It catches more wind than the jib when conditions are gentle</li>
+        </ul>
+        <span class="label">When NOT to use it</span>
+        <p style="color:var(--danger);font-weight:600;">Strong winds — the screecher is too large and light, it can be overpowered and damaged.</p>
+      </div>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 300 350" fill="none">
+        <text x="150" y="18" class="svg-title" fill="#0B2545" text-anchor="middle">Screecher vs Jib Size</text>
+        <!-- Mast -->
+        <line x1="80" y1="40" x2="80" y2="310" stroke="#0B2545" stroke-width="3"/>
+        <!-- Forestay -->
+        <line x1="80" y1="40" x2="200" y2="305" stroke="#8DA9C4" stroke-width="1" stroke-dasharray="4 3"/>
+        <!-- Jib (smaller, semi-transparent) -->
+        <path d="M82 55 L195 300 L85 295 Z" fill="#1A7A8A" opacity="0.1" stroke="#1A7A8A" stroke-width="1" stroke-dasharray="4 2"/>
+        <text x="115" y="230" class="svg-label-sm" fill="#1A7A8A" transform="rotate(-65,115,230)">Jib (smaller)</text>
+        <!-- Screecher (larger, on its own furler) -->
+        <path d="M82 40 L260 280 L85 285 Z" fill="#E8963E" opacity="0.12" stroke="#E8963E" stroke-width="2"/>
+        <text x="140" y="170" class="svg-label" fill="#E8963E" transform="rotate(-55,140,170)">SCREECHER</text>
+        <!-- Screecher furler -->
+        <circle cx="262" cy="282" r="6" fill="none" stroke="#E8963E" stroke-width="2"/>
+        <line x1="82" y1="40" x2="262" y2="282" stroke="#E8963E" stroke-width="1" stroke-dasharray="6 3"/>
+        <text x="225" y="300" class="svg-label-sm" fill="#E8963E">Own furler</text>
+        <!-- Size comparison -->
+        <line x1="270" y1="40" x2="270" y2="280" stroke="#E8963E" stroke-width="1"/>
+        <line x1="266" y1="40" x2="274" y2="40" stroke="#E8963E" stroke-width="1"/>
+        <line x1="266" y1="280" x2="274" y2="280" stroke="#E8963E" stroke-width="1"/>
+        <text x="278" y="165" class="svg-label-sm" fill="#E8963E" transform="rotate(-90,278,165)">Much larger area!</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 15: Screecher Lines ========== -->
+<div class="slide bg-cream" data-n="15">
+  <div class="section-title">Screecher Lines</div>
+  <div class="section-subtitle">Sheets and furling — same concept as the jib</div>
+  <div class="card-row">
+    <div class="card">
+      <h3>Screecher Sheets</h3>
+      <ul>
+        <li>Two sheets, port and starboard (just like the jib)</li>
+        <li>Control the angle of the screecher</li>
+        <li>Generally eased more than jib sheets — the screecher likes to fly free</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Screecher Furling Line</h3>
+      <ul>
+        <li>Rolls the screecher up on its own dedicated furler</li>
+        <li>Works the same as jib furling — ease sheet, pull furling line</li>
+        <li><strong class="teal">Always furl before the wind gets too strong!</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 16: Hoisting Into Wind ========== -->
+<div class="slide bg-dark" data-n="16">
+  <div class="section-title" style="color:var(--white);">Hoisting Into Wind</div>
+  <div class="section-subtitle" style="color:var(--accent);">Always point into the wind when raising sails</div>
+  <div class="content-with-diagram">
+    <div class="content-side">
+      <div class="three-cards" style="flex-direction:column;">
+        <div class="card dark">
+          <h3 style="color:var(--accent);">Less Load</h3>
+          <p>Wind flows over both sides equally, so the sail doesn't fill with power while you're raising it.</p>
+        </div>
+        <div class="card dark">
+          <h3 style="color:var(--accent);">Safer</h3>
+          <p>No sudden forces on the sail, lines, or crew. The boat stays stable and manageable.</p>
+        </div>
+        <div class="card dark">
+          <h3 style="color:var(--accent);">Easier</h3>
+          <p>The sail slides up freely without catching the wind. Fighting a filled sail is exhausting!</p>
+        </div>
+      </div>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 260 320" fill="none">
+        <text x="130" y="18" class="svg-title" fill="#FFFFFF" text-anchor="middle">Head to Wind</text>
+        <!-- Wind arrows coming down -->
+        <line x1="100" y1="35" x2="100" y2="75" stroke="#8DA9C4" stroke-width="1.5"/>
+        <polygon points="97,75 103,75 100,82" fill="#8DA9C4"/>
+        <line x1="130" y1="35" x2="130" y2="75" stroke="#8DA9C4" stroke-width="1.5"/>
+        <polygon points="127,75 133,75 130,82" fill="#8DA9C4"/>
+        <line x1="160" y1="35" x2="160" y2="75" stroke="#8DA9C4" stroke-width="1.5"/>
+        <polygon points="157,75 163,75 160,82" fill="#8DA9C4"/>
+        <text x="130" y="30" class="svg-label" fill="#8DA9C4" text-anchor="middle">WIND</text>
+
+        <!-- Boat pointing into wind (correct) -->
+        <path d="M130 90 L155 140 L150 260 L130 285 L110 260 L105 140 Z" fill="#FFFFFF" opacity="0.06" stroke="#8DA9C4" stroke-width="1.5"/>
+        <!-- Mast -->
+        <circle cx="130" cy="150" r="4" fill="#8DA9C4"/>
+        <!-- Sail luffing (both sides equally) -->
+        <path d="M130 100 Q140 125 132 148" stroke="#E8963E" stroke-width="1.5" fill="none" opacity="0.5"/>
+        <path d="M130 100 Q120 125 128 148" stroke="#E8963E" stroke-width="1.5" fill="none" opacity="0.5"/>
+        <text x="145" y="120" class="svg-label-sm" fill="#E8963E">Sail luffs</text>
+        <text x="145" y="132" class="svg-label-sm" fill="#E8963E">(no power)</text>
+
+        <!-- Halyard going up -->
+        <path d="M130 148 L130 95 L125 85" stroke="#E8963E" stroke-width="2" fill="none"/>
+        <polygon points="122,90 125,80 128,90" fill="#E8963E"/>
+        <text x="62" y="88" class="svg-label" fill="#E8963E">Halyard ↑</text>
+
+        <!-- Check mark -->
+        <circle cx="130" cy="305" r="12" fill="none" stroke="#2D8B4E" stroke-width="2"/>
+        <path d="M122 305 L128 311 L138 299" stroke="#2D8B4E" stroke-width="2.5" fill="none"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 17: Quick Reference ========== -->
+<div class="slide bg-cream" data-n="17">
+  <div class="section-title">Quick Reference</div>
+  <div class="section-subtitle">All the lines at a glance</div>
+  <div style="flex:1;overflow:auto;">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Line / Sail</th><th>What It Does</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Main Halyard</td><td>Hoists the mainsail up the mast</td></tr>
+        <tr><td>Main Sheet</td><td>Controls boom/mainsail angle</td></tr>
+        <tr><td>Outhaul</td><td>Pulls foot of mainsail along boom (sail shape)</td></tr>
+        <tr><td>Leech Line</td><td>Reduces flutter on sail's trailing edge</td></tr>
+        <tr><td>Reefing Lines</td><td>Reduce mainsail area in strong wind</td></tr>
+        <tr><td>Preventer</td><td>Prevents accidental gybe (safety!)</td></tr>
+        <tr><td>Jib Sheets</td><td>Control jib angle (port &amp; starboard)</td></tr>
+        <tr><td>Jib Furling Line</td><td>Rolls jib around forestay</td></tr>
+        <tr><td>Screecher Sheets</td><td>Control screecher angle</td></tr>
+        <tr><td>Screecher Furling</td><td>Rolls screecher on its dedicated furler</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ========== SLIDE 18: Quiz Time ========== -->
+<div class="slide bg-navy title-slide" data-n="18">
+  <svg width="80" height="80" viewBox="0 0 80 80" fill="none" style="margin-bottom:1rem">
+    <circle cx="40" cy="40" r="35" fill="none" stroke="#E8963E" stroke-width="3"/>
+    <text x="40" y="52" font-family="Georgia, serif" font-size="38" font-weight="bold" fill="#E8963E" text-anchor="middle">?</text>
+  </svg>
+  <h1>Quiz Time!</h1>
+  <div class="subtitle">20 questions to test what you've learned</div>
+  <div class="divider"></div>
+  <div class="tagline">Good luck, crew!</div>
+</div>
+
+</div><!-- end slideshow -->
+
+<div class="footer-bar">
+  <span>Seawind 1600 Family Sailing Course</span>
+</div>
+
+<div class="slide-number" id="slideNum">1 / 18</div>
+
+<div class="nav-arrows">
+  <button class="nav-btn" onclick="prevSlide()" title="Previous (Left arrow)">&#8592;</button>
+  <button class="nav-btn" onclick="nextSlide()" title="Next (Right arrow)">&#8594;</button>
+</div>
+
+<div class="key-hint">Use arrow keys or click to navigate</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+  const total = slides.length;
+
+  function showSlide(n) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, total - 1));
+    slides[current].classList.add('active');
+    document.getElementById('slideNum').textContent = (current + 1) + ' / ' + total;
+    document.getElementById('progressBar').style.width = ((current + 1) / total * 100) + '%';
+  }
+
+  function nextSlide() { showSlide(current + 1); }
+  function prevSlide() { showSlide(current - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+    if (e.key === 'Home') { e.preventDefault(); showSlide(0); }
+    if (e.key === 'End') { e.preventDefault(); showSlide(total - 1); }
+  });
+
+  // Touch/swipe support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+  });
+
+  showSlide(0);
+</script>
+</body>
+</html>

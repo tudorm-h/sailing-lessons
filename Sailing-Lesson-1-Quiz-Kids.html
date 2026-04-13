@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sailing Lesson 1 Quiz — Kids Edition — Seawind 1600</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --maroon: #6D2141;
+    --dark-maroon: #4A1530;
+    --gold: #FFBB00;
+    --navy: #0B2545;
+    --teal: #1A7A8A;
+    --light-blue: #8DA9C4;
+    --cream: #FFF9F0;
+    --white: #FFFFFF;
+    --green: #2D8B4E;
+    --red: #C0392B;
+    --light-gray: #F0E6D6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    min-height: 100vh;
+  }
+
+  .quiz-header {
+    background: linear-gradient(135deg, var(--maroon), var(--dark-maroon));
+    color: var(--white);
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .quiz-header h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 2.2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .quiz-header .subtitle { color: var(--gold); font-size: 1rem; font-weight: 600; }
+  .quiz-header .tagline { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.4rem; }
+
+  .progress-container {
+    background: var(--dark-maroon);
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .progress-track { flex: 1; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--gold); border-radius: 5px; transition: width 0.4s ease; width: 0%; }
+  .progress-text { color: var(--gold); font-size: 0.8rem; font-weight: 600; min-width: 90px; text-align: right; }
+  .score-display { color: var(--white); font-size: 0.8rem; font-weight: 700; min-width: 70px; font-family: 'Fredoka', sans-serif; }
+
+  .quiz-body { max-width: 750px; margin: 0 auto; padding: 1.5rem; }
+
+  .question-card { display: none; animation: fadeIn 0.3s ease; }
+  .question-card.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .q-number {
+    display: inline-block;
+    background: var(--maroon);
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    margin-bottom: 0.8rem;
+    font-family: 'Fredoka', sans-serif;
+  }
+
+  .q-text {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.35rem;
+    color: var(--maroon);
+    margin-bottom: 1.2rem;
+    line-height: 1.4;
+  }
+
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+  .option-btn {
+    background: var(--white);
+    border: 2px solid var(--light-gray);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    font-size: 0.92rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--navy);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .option-btn:hover:not(.disabled) {
+    border-color: var(--gold);
+    background: rgba(255,187,0,0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  }
+
+  .option-btn.correct {
+    border-color: var(--green);
+    background: #E8F5E9;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .option-btn.correct::after {
+    content: '\2713';
+    position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%);
+    font-size: 1.3rem; font-weight: 700; color: var(--green);
+  }
+
+  .option-btn.wrong {
+    border-color: var(--red);
+    background: #FDECEA;
+    color: var(--red);
+  }
+
+  .option-btn.wrong::after {
+    content: '\2717';
+    position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%);
+    font-size: 1.3rem; font-weight: 700; color: var(--red);
+  }
+
+  .option-btn.disabled { cursor: default; opacity: 0.55; }
+  .option-btn.correct.disabled { opacity: 1; }
+
+  .explanation {
+    display: none;
+    margin-top: 1.2rem;
+    padding: 1rem 1.2rem;
+    background: var(--maroon);
+    color: var(--cream);
+    border-radius: 12px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--gold); }
+
+  .next-btn {
+    display: none;
+    margin-top: 1.2rem;
+    padding: 0.7rem 2rem;
+    background: var(--gold);
+    color: var(--dark-maroon);
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'Fredoka', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+    float: right;
+  }
+
+  .next-btn:hover { background: #e0a800; }
+  .next-btn.show { display: inline-block; }
+
+  .results-card { display: none; text-align: center; padding: 2.5rem 1.5rem; animation: fadeIn 0.4s ease; }
+  .results-card.active { display: block; }
+
+  .results-card h2 { font-family: 'Fredoka', sans-serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 0.8rem; }
+
+  .score-big { font-size: 4.5rem; font-weight: 700; color: var(--gold); font-family: 'Fredoka', sans-serif; text-shadow: 2px 2px 0 var(--maroon); }
+  .score-label { font-size: 1.3rem; color: var(--maroon); margin-bottom: 0.8rem; font-family: 'Fredoka', sans-serif; }
+  .score-message { font-size: 1.05rem; color: var(--teal); margin: 0.8rem 0 1.5rem; }
+
+  .restart-btn {
+    padding: 0.7rem 2.5rem;
+    background: var(--maroon);
+    color: var(--gold);
+    border: 2px solid var(--gold);
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'Fredoka', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .restart-btn:hover { background: var(--gold); color: var(--maroon); }
+
+  .review-section { margin-top: 2rem; text-align: left; max-width: 650px; margin-left: auto; margin-right: auto; }
+
+  .review-section h3 { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; color: var(--maroon); margin-bottom: 0.8rem; text-align: center; }
+
+  .review-item {
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .review-item.correct-review { background: #E8F5E9; }
+  .review-item.wrong-review { background: #FDECEA; }
+  .review-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .review-content { flex: 1; }
+  .review-q { font-weight: 600; color: var(--navy); }
+  .review-a { color: var(--green); font-size: 0.8rem; margin-top: 0.15rem; }
+  .review-wrong-a { color: var(--red); font-size: 0.8rem; margin-top: 0.15rem; }
+
+  .clearfix::after { content: ''; display: table; clear: both; }
+
+  @media (max-width: 600px) {
+    .quiz-header { padding: 1.2rem 1rem; }
+    .quiz-header h1 { font-size: 1.6rem; }
+    .quiz-header .subtitle { font-size: 0.9rem; }
+    .progress-container { padding: 0.4rem 0.8rem; flex-wrap: wrap; gap: 0.4rem; }
+    .progress-text { font-size: 0.7rem; min-width: auto; }
+    .score-display { font-size: 0.7rem; min-width: auto; }
+    .quiz-body { padding: 1rem; }
+    .q-text { font-size: 1.1rem; }
+    .options { grid-template-columns: 1fr; }
+    .option-btn { padding: 0.85rem 0.9rem; font-size: 0.88rem; }
+    .results-card h2 { font-size: 1.6rem; }
+    .score-big { font-size: 3rem; }
+    .next-btn { width: 100%; text-align: center; float: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="quiz-header">
+  <h1>Lesson 1 Quiz</h1>
+  <div class="subtitle">Lines, Sails &amp; Rigging &mdash; 20 Questions</div>
+  <div class="tagline">Seawind 1600 &mdash; Kids Edition</div>
+</div>
+
+<div class="progress-container">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text" id="progressText">Q1 / 20</div>
+  <div class="score-display" id="scoreDisplay">Score: 0</div>
+</div>
+
+<div class="quiz-body" id="quizBody"></div>
+
+<script>
+const questions = [
+  {
+    q: "On a boat, what do we call ropes?",
+    options: ["Ropes", "Lines", "Cables", "Strings"],
+    answer: 1,
+    explain: "On a boat, ropes are called <strong>LINES</strong>. Every line has a name that tells you its job!"
+  },
+  {
+    q: "What does a halyard do?",
+    options: ["Swings the boom around", "Stops the boat from turning", "Pulls a sail UP the mast", "Rolls a sail up"],
+    answer: 2,
+    explain: "A halyard <strong>pulls a sail up the mast</strong> \u2014 like a flagpole rope!"
+  },
+  {
+    q: "The word \"halyard\" comes from what old saying?",
+    options: ["\"Half yard\"", "\"Haul yard\"", "\"Hard yard\"", "\"Happy yard\""],
+    answer: 1,
+    explain: "It comes from <strong>\"haul yard\"</strong> \u2014 sailors used to haul (pull) the yard (pole) up the mast!"
+  },
+  {
+    q: "What does the main sheet do?",
+    options: ["Covers the boat like a bed sheet", "Controls the angle of the boom", "Raises the mainsail", "Stops the sail flapping"],
+    answer: 1,
+    explain: "The main sheet <strong>controls how far the boom swings out</strong>. And no \u2014 it's not a bed sheet!"
+  },
+  {
+    q: "A \"sheet\" in sailing is actually a...",
+    options: ["Piece of fabric", "Type of sail", "Line (rope) that controls a sail", "Part of the hull"],
+    answer: 2,
+    explain: "A sheet is a <strong>LINE that controls a sail's angle</strong>. Confusing name, but now you know!"
+  },
+  {
+    q: "What does the outhaul do to the mainsail?",
+    options: ["Makes it go higher", "Changes its shape \u2014 flatter or baggier", "Changes its colour", "Makes it spin around"],
+    answer: 1,
+    explain: "The outhaul <strong>pulls the bottom of the sail along the boom</strong>, making it flatter or baggier."
+  },
+  {
+    q: "When it's really windy, should the outhaul be tight or loose?",
+    options: ["Loose (baggy sail)", "Tight (flat sail)", "Doesn't matter", "Take it off completely"],
+    answer: 1,
+    explain: "<strong>Tight outhaul = flat sail</strong>. A flat sail has less power, which is what you want in strong wind!"
+  },
+  {
+    q: "The \"leech\" is which part of the sail?",
+    options: ["The bottom edge", "The front edge", "The back edge", "The top corner"],
+    answer: 2,
+    explain: "The leech is the <strong>back (trailing) edge</strong> of the sail. The front is the luff and the bottom is the foot."
+  },
+  {
+    q: "The leech line helps stop the sail from...",
+    options: ["Falling down", "Flapping at the back edge", "Changing colour", "Getting wet"],
+    answer: 1,
+    explain: "The leech line <strong>stops the back edge of the sail from flapping</strong>. No more annoying flutter!"
+  },
+  {
+    q: "What is \"reefing\"?",
+    options: ["Sailing near a coral reef", "Making the sail smaller", "Making the sail bigger", "Cleaning the sail"],
+    answer: 1,
+    explain: "Reefing means <strong>making the sail smaller</strong> so it's easier to handle in strong wind."
+  },
+  {
+    q: "What's the golden rule about reefing?",
+    options: ["\"Never reef before lunch\"", "\"Reef early, shake it out later\"", "\"Only reef in a storm\"", "\"Ask a dolphin first\""],
+    answer: 1,
+    explain: "<strong>\"Reef early, shake it out later.\"</strong> If you're even thinking about it, do it!"
+  },
+  {
+    q: "The preventer stops what from happening?",
+    options: ["The boat sinking", "The sails falling off", "The boom swinging across dangerously", "The anchor dragging"],
+    answer: 2,
+    explain: "The preventer <strong>stops the boom from swinging across</strong> in an accidental gybe. Super important safety line!"
+  },
+  {
+    q: "When should you ALWAYS use a preventer?",
+    options: ["When anchored", "When going upwind", "When sailing downwind", "When eating lunch"],
+    answer: 2,
+    explain: "<strong>Always use a preventer when sailing downwind.</strong> That's when accidental gybes can happen!"
+  },
+  {
+    q: "How many jib sheets are there?",
+    options: ["Just one", "Two \u2014 one on each side", "Three", "None"],
+    answer: 1,
+    explain: "There are <strong>two jib sheets</strong> \u2014 one on port (left) and one on starboard (right). Only one works at a time!"
+  },
+  {
+    q: "The working jib sheet is on which side of the boat?",
+    options: ["The upwind side", "The left side always", "The downwind side", "The right side always"],
+    answer: 2,
+    explain: "The working sheet is always on the <strong>downwind (leeward) side</strong>!"
+  },
+  {
+    q: "The jib furling line works like a...",
+    options: ["Yo-yo", "Roller blind on a window", "Trampoline", "Zip line"],
+    answer: 1,
+    explain: "The furling line <strong>rolls the jib up around the forestay</strong> \u2014 just like a roller blind!"
+  },
+  {
+    q: "The screecher is best for what kind of wind?",
+    options: ["Really strong wind", "Light or gentle wind", "No wind at all", "Hurricanes"],
+    answer: 1,
+    explain: "The screecher is for <strong>light to moderate wind</strong>. It's big and lightweight \u2014 perfect for gentle days!"
+  },
+  {
+    q: "Why should you NOT use the screecher in strong wind?",
+    options: ["It's too small", "It's too heavy", "It's too big and thin \u2014 it could rip!", "It smells bad"],
+    answer: 2,
+    explain: "The screecher is <strong>big and made from thin material</strong>. Strong wind can overpower and damage it!"
+  },
+  {
+    q: "Why do we point into the wind when raising sails?",
+    options: ["It looks cool", "So the engine goes faster", "The sail doesn't fill with wind, making it easier and safer", "Because the fish like it"],
+    answer: 2,
+    explain: "Pointing into the wind means <strong>the sail doesn't fill with power</strong> while you raise it. Way easier and safer!"
+  },
+  {
+    q: "What shape is the top of our Seawind 1600's mainsail?",
+    options: ["Pointy triangle", "Square (flat) top", "Round", "Star shaped"],
+    answer: 1,
+    explain: "Our Seawind 1600 has a <strong>square-top mainsail</strong> \u2014 the top is flat, not pointy. It gives us more sail area and power!"
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+let answers = [];
+
+function buildQuiz() {
+  const body = document.getElementById('quizBody');
+  let html = '';
+  const letters = ['A', 'B', 'C', 'D'];
+
+  questions.forEach((q, i) => {
+    html += `<div class="question-card${i === 0 ? ' active' : ''}" id="q${i}">
+      <span class="q-number">Q${i + 1} / 20</span>
+      <div class="q-text">${q.q}</div>
+      <div class="options">
+        ${q.options.map((opt, oi) => `<button class="option-btn" data-q="${i}" data-opt="${oi}" onclick="selectAnswer(${i}, ${oi})">${letters[oi]}) ${opt}</button>`).join('')}
+      </div>
+      <div class="explanation" id="explain${i}">${q.explain}</div>
+      <div class="clearfix">
+        <button class="next-btn" id="next${i}" onclick="nextQuestion(${i})">${i < questions.length - 1 ? 'Next Question \u2192' : 'See My Score! \u2192'}</button>
+      </div>
+    </div>`;
+  });
+
+  html += `<div class="results-card" id="results">
+    <h2>Awesome Job, Sailor!</h2>
+    <div class="score-big" id="finalScore">0</div>
+    <div class="score-label">out of 20</div>
+    <div class="score-message" id="scoreMessage"></div>
+    <button class="restart-btn" onclick="restart()">Try Again!</button>
+    <div class="review-section" id="reviewSection">
+      <h3>Let's See What Happened</h3>
+      <div id="reviewList"></div>
+    </div>
+  </div>`;
+
+  body.innerHTML = html;
+}
+
+function selectAnswer(qIndex, optIndex) {
+  const btns = document.querySelectorAll(`[data-q="${qIndex}"]`);
+  const correct = questions[qIndex].answer;
+  const isCorrect = optIndex === correct;
+
+  answers[qIndex] = { selected: optIndex, correct: isCorrect };
+
+  btns.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === correct) btn.classList.add('correct');
+    if (i === optIndex && !isCorrect) btn.classList.add('wrong');
+  });
+
+  if (isCorrect) score++;
+
+  document.getElementById(`explain${qIndex}`).classList.add('show');
+  document.getElementById(`next${qIndex}`).classList.add('show');
+  document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
+}
+
+function nextQuestion(fromIndex) {
+  document.getElementById(`q${fromIndex}`).classList.remove('active');
+
+  if (fromIndex < questions.length - 1) {
+    currentQ = fromIndex + 1;
+    document.getElementById(`q${currentQ}`).classList.add('active');
+    document.getElementById('progressText').textContent = `Q${currentQ + 1} / 20`;
+    document.getElementById('progressFill').style.width = ((currentQ + 1) / questions.length * 100) + '%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('progressText').textContent = 'Done!';
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('results').classList.add('active');
+  document.getElementById('finalScore').textContent = score;
+
+  let msg = '';
+  if (score === 20) msg = "PERFECT SCORE! You're basically a captain now!";
+  else if (score >= 17) msg = "Amazing! You really know your stuff, sailor!";
+  else if (score >= 13) msg = "Great job! Have another look at the lesson and you'll nail it next time!";
+  else if (score >= 8) msg = "Good start! Check out the lesson slides again and give it another go!";
+  else msg = "No worries! Read through the lesson one more time and try again \u2014 you'll smash it!";
+  document.getElementById('scoreMessage').textContent = msg;
+
+  const letters = ['A', 'B', 'C', 'D'];
+  let reviewHTML = '';
+  questions.forEach((q, i) => {
+    const a = answers[i];
+    const wasCorrect = a && a.correct;
+    reviewHTML += `<div class="review-item ${wasCorrect ? 'correct-review' : 'wrong-review'}">
+      <span class="review-icon">${wasCorrect ? '\u2713' : '\u2717'}</span>
+      <div class="review-content">
+        <div class="review-q">Q${i+1}: ${q.q}</div>
+        ${!wasCorrect && a ? `<div class="review-wrong-a">You picked: ${letters[a.selected]}) ${q.options[a.selected]}</div>` : ''}
+        <div class="review-a">Answer: ${letters[q.answer]}) ${q.options[q.answer]}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('reviewList').innerHTML = reviewHTML;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restart() {
+  currentQ = 0; score = 0; answers = [];
+  document.getElementById('scoreDisplay').textContent = 'Score: 0';
+  document.getElementById('progressText').textContent = 'Q1 / 20';
+  document.getElementById('progressFill').style.width = ((1 / questions.length) * 100) + '%';
+  document.getElementById('results').classList.remove('active');
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+</script>
+</body>
+</html>

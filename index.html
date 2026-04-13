@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sailing Lessons — Seawind 1600</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #0B2545; min-height: 100vh; color: #EEF4ED; }
+  .hero {
+    text-align: center;
+    padding: 3rem 2rem 2rem;
+    background: linear-gradient(135deg, #0B2545, #13315C);
+  }
+  .hero h1 { font-family: 'Fredoka', sans-serif; font-size: 2.5rem; margin-bottom: 0.3rem; }
+  .hero .sub { color: #8DA9C4; font-size: 1.1rem; }
+  .cards {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.2s;
+  }
+  .card:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+  .card h2 { font-family: 'Fredoka', sans-serif; font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .card p { color: #8DA9C4; font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; }
+  .card a {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: #E8963E;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  .card a:hover { background: #d17e2e; }
+  .card.broncos { border-color: #6D2141; }
+  .card.broncos a { background: #6D2141; }
+  .card.broncos a:hover { background: #8a2a53; }
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .badge.adult { background: #134074; color: #8DA9C4; }
+  .badge.kids { background: #6D2141; color: #FFBB00; }
+  .footer { text-align: center; padding: 2rem; color: #8DA9C4; font-size: 0.8rem; opacity: 0.5; }
+  @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } .hero h1 { font-size: 1.8rem; } }
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>Sailing Lessons</h1>
+  <div class="sub">Seawind 1600 Catamaran</div>
+</div>
+<div class="cards">
+  <div class="card">
+    <span class="badge adult">Adult Version</span>
+    <h2>Lesson 1: Lines, Sails &amp; Rigging</h2>
+    <p>18-slide presentation covering all ropes, sails, and rigging on the Seawind 1600. Navigate with arrow keys or swipe.</p>
+    <a href="Sailing-Lesson-1.html">Open Lesson</a>
+  </div>
+  <div class="card">
+    <span class="badge adult">Adult Version</span>
+    <h2>Lesson 1 Quiz</h2>
+    <p>20 multiple-choice questions with instant feedback, explanations, and a score at the end.</p>
+    <a href="Sailing-Lesson-1-Quiz.html">Take Quiz</a>
+  </div>
+  <div class="card broncos">
+    <span class="badge kids">Kids Edition</span>
+    <h2>Lesson 1: Lines, Sails &amp; Rigging</h2>
+    <p>Kid-friendly version with simpler language, fun memory tricks, Broncos branding, and accurate Seawind 1600 diagrams.</p>
+    <a href="Sailing-Lesson-1-Kids.html">Open Lesson</a>
+  </div>
+  <div class="card broncos">
+    <span class="badge kids">Kids Edition</span>
+    <h2>Lesson 1 Quiz</h2>
+    <p>20 questions with encouraging feedback and Broncos-themed design. Simpler wording for younger sailors.</p>
+    <a href="Sailing-Lesson-1-Quiz-Kids.html">Take Quiz</a>
+  </div>
+</div>
+<div class="footer">Seawind 1600 Family Sailing Course</div>
+</body>
+</html>
